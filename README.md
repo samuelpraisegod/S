@@ -76,9 +76,33 @@
         th { background: #f8f9fa; font-weight: bold; color: #333; }
         tr:hover { background: #f5f5f5; }
         .promo { background: #d4edda; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
-        .co-funding { font-size: 0.85em; color: #444; }
-        .action-btn { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
+        .action-btn { 
+            background: #007bff; 
+            color: white; 
+            border: none; 
+            padding: 8px 16px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: inline-block; 
+        }
         .action-btn:hover { background: #0056b3; }
+        /* Firm Column Clickable */
+        .firm-name { 
+            color: #007bff; 
+            cursor: pointer; 
+            text-decoration: underline; 
+        }
+        .firm-name:hover { color: #0056b3; }
+        .firm-details { 
+            display: none; 
+            padding: 10px; 
+            background: #f9f9f9; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            margin: 10px 0; 
+        }
+        .firm-details.active { display: block; }
         @media (max-width: 600px) {
             .container { flex-direction: column; align-items: center; }
             th, td { padding: 8px 4px; font-size: 0.85em; }
@@ -87,22 +111,15 @@
 </head>
 <body>
     <h1>Top Prop Firm Brokers - September 2025 Demo</h1>
-    <p style="text-align: center; color: #666;">Updated with the latest firms based on recent reviews. Click "Visit Broker" or "View Details" to explore (affiliate links ready for commissions).</p>
+    <p style="text-align: center; color: #666;">Updated with the latest firms based on recent reviews. Click "Visit Broker" or "Firm" name for details (affiliate links ready for commissions).</p>
 
     <!-- Cards Section (Existing) -->
     <div class="container" id="firms-container"></div>
 
-    <!-- Placeholder for Create Co-Funding Section -->
-    <section id="create-co-funding" class="section">
-        <h2>Create Co-Funding</h2>
-        <p>Start your co-funding journey here. Fill out the form to get matched with partners.</p>
-        <button style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer;">Create New Co-Funding</button>
-    </section>
-
-    <!-- Prop Firms Table Section with New Columns -->
+    <!-- Prop Firms Table Section -->
     <section id="prop-firms-table" class="section">
         <h2>Prop Firms Overview</h2>
-        <p>Compare top prop firms with key metrics, including pricing and co-funding splits. (Static for demo; will fetch from API later.)</p>
+        <p>Compare top prop firms. Click the firm name for more details. (Static for demo; will fetch from API later.)</p>
         <div class="table-container">
             <table>
                 <thead>
@@ -115,8 +132,6 @@
                         <th>Platforms</th>
                         <th>Max Allocations</th>
                         <th>Promo</th>
-                        <th>Solo Price</th>
-                        <th>Co-Funding</th>
                         <th>Profit Split</th>
                         <th>Action</th>
                     </tr>
@@ -129,9 +144,10 @@
     </section>
 
     <script>
-        // Existing Cards Data and Render (unchanged)
+        // Existing Cards Data and Render
         const firms = [
             {
+                id: 1, // Added for table-details mapping
                 name: 'FTMO',
                 website: 'https://ftmo.com/',
                 description: 'Leading prop firm for forex traders with two-phase challenges, scaling up to $2M, and support for MT4/MT5/cTrader platforms.',
@@ -139,7 +155,9 @@
                 logo: 'https://ftmo.com/wp-content/themes/ftmo/assets/images/ftmo-logo-white.svg',
                 affiliate_link: 'https://ftmo.com/en/affiliate-program/?ref=yourid'
             },
+            // ... (other firms; truncated for brevity)
             {
+                id: 2,
                 name: 'FundedNext',
                 website: 'https://fundednext.com/',
                 description: 'Flexible forex and futures prop firm with no time limits, scaling to $4M, fast payouts, and MT5/cTrader support.',
@@ -147,7 +165,6 @@
                 logo: 'https://fundednext.com/assets/images/fundednext-logo.png',
                 affiliate_link: 'https://fundednext.com/affiliate?ref=yourid'
             }
-            // Add back other firms if needed
         ];
 
         // Render cards
@@ -167,9 +184,10 @@
             container.appendChild(card);
         });
 
-        // Static Table Data with New Columns
+        // Static Table Data (FTMO only for demo)
         const firmsTableData = [
             {
+                id: 1, // Matches firms array for details toggle
                 firm: 'FTMO',
                 rankReviews: '1 / 4.8 (25K+)',
                 country: 'Czech Republic',
@@ -178,33 +196,18 @@
                 platforms: 'MT4, MT5, cTrader',
                 maxAllocations: '$2,000,000',
                 promo: '25% Off Challenges',
-                soloPrice: 155, // USD, for 10K challenge (FTMO pricing, 2025)
                 profitSplit: 'Up to 90%',
                 affiliateLink: 'https://ftmo.com/en/affiliate-program/?ref=yourid'
             }
-            // Add more rows, e.g., FundedNext: { firm: 'FundedNext', soloPrice: 99, ... }
+            // Add more, e.g., FundedNext: { id: 2, firm: 'FundedNext', rankReviews: '2 / 4.7 (15K+)', ... }
         ];
-
-        // Co-Funding Calculation Logic (based on 50/50 split, per example)
-        function calculateCoFunding(soloPrice, profitSplit) {
-            // Assuming 50/50 split for now (from example: $100 -> $50/$50)
-            // Replace with coFunding.js logic if different
-            const requesterShare = soloPrice * 0.5;
-            const partnerShare = soloPrice * 0.5;
-            return {
-                total: soloPrice,
-                requester: requesterShare.toFixed(2),
-                partner: partnerShare.toFixed(2)
-            };
-        }
 
         // Render Table Rows
         const tableBody = document.getElementById('table-body');
         firmsTableData.forEach(row => {
-            const coFunding = calculateCoFunding(row.soloPrice, row.profitSplit);
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${row.firm}</td>
+                <td><span class="firm-name" data-firm-id="${row.id}">${row.firm}</span></td>
                 <td>${row.rankReviews}</td>
                 <td>${row.country}</td>
                 <td>${row.years}</td>
@@ -212,24 +215,38 @@
                 <td>${row.platforms}</td>
                 <td>${row.maxAllocations}</td>
                 <td><span class="promo">${row.promo}</span></td>
-                <td>$${row.soloPrice}</td>
-                <td class="co-funding">
-                    Total: $${coFunding.total}<br>
-                    Requester: $${coFunding.requester} / Partner: $${coFunding.partner}
-                </td>
                 <td>${row.profitSplit}</td>
                 <td><a href="${row.affiliateLink}" target="_blank" rel="noopener noreferrer" class="action-btn">View Details</a></td>
             `;
             tableBody.appendChild(tr);
+
+            // Add hidden details row
+            const detailsRow = document.createElement('tr');
+            const firmData = firms.find(f => f.id === row.id);
+            detailsRow.innerHTML = `
+                <td colspan="10">
+                    <div class="firm-details" id="details-${row.id}">
+                        <img src="${firmData.logo}" alt="${firmData.name} Logo" style="max-width: 100px; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/100x100/CCCCCC/FFFFFF?text=${firmData.name.charAt(0)}';">
+                        <h3>${firmData.name}</h3>
+                        <p>${firmData.description}</p>
+                        <p><strong>Profit Split:</strong> ${firmData.profit_split}</p>
+                        <a href="${firmData.affiliate_link}" target="_blank" rel="noopener noreferrer">
+                            <button>Visit Broker</button>
+                        </a>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(detailsRow);
         });
 
-        // Future: Dynamic API integration
-        // fetch('http://localhost:3000/api/firms').then(res => res.json()).then(data => {
-        //     data.forEach(row => {
-        //         const coFunding = calculateCoFunding(row.solo_price, row.profit_split);
-        //         // Render as above
-        //     });
-        // });
+        // Toggle Firm Details on Click
+        document.querySelectorAll('.firm-name').forEach(firm => {
+            firm.addEventListener('click', () => {
+                const firmId = firm.getAttribute('data-firm-id');
+                const details = document.getElementById(`details-${firmId}`);
+                details.classList.toggle('active');
+            });
+        });
     </script>
 </body>
 </html>
