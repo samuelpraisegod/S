@@ -117,13 +117,22 @@
                 <span id="toggleStatus">ON</span>
             </div>
             <form id="coFundingForm">
+                <label for="propFirm">Prop Firm:</label>
+                <select id="propFirm" name="propFirm" required>
+                    <option value="">Select Prop Firm</option>
+                    <option value="FTMO">FTMO</option>
+                    <option value="E8 Funding">E8 Funding</option>
+                    <option value="The5ers">The5ers</option>
+                </select>
+
                 <label for="accountSize">Account Size:</label>
                 <select id="accountSize" name="accountSize" required>
                     <option value="">Select Account Size</option>
-                    <option value="1000">$1,000</option>
-                    <option value="2000">$2,000</option>
                     <option value="5000">$5,000</option>
                     <option value="10000">$10,000</option>
+                    <option value="25000">$25,000</option>
+                    <option value="50000">$50,000</option>
+                    <option value="100000">$100,000</option>
                 </select>
 
                 <label for="profitSplit">Profit Split Agreement:</label>
@@ -149,6 +158,8 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('coFundingForm');
+            const propFirm = document.getElementById('propFirm');
             const accountSize = document.getElementById('accountSize');
             const profitSplit = document.getElementById('profitSplit');
             const accountPrice = document.getElementById('accountPrice');
@@ -161,22 +172,57 @@
             const submitButton = document.getElementById('submitButton');
             const contributionDetails = document.getElementById('contributionDetails');
 
-            // Pacific prop firm price mapping based on typical low-cost structures
+            // Price mapping based on prop firm and account size (simulating API data; in production, fetch from API)
+            // Prices approximated from 2025 data: FTMO in USD (converted from EUR @ ~1.1 rate), others in USD
+            // Note: MyForexFunds removed as it's defunct per 2025 status
             const priceMap = {
-                '1000': 15,  // e.g., $15 for $1K challenge
-                '2000': 30,  // Scaled for $2K
-                '5000': 50,  // e.g., $50 for $5K challenge
-                '10000': 100 // Scaled for $10K
+                'FTMO': {
+                    '5000': 0,   // Not available for FTMO
+                    '10000': 170,
+                    '25000': 275,
+                    '50000': 380,
+                    '100000': 594
+                },
+                'E8 Funding': {
+                    '5000': 59,
+                    '10000': 99,
+                    '25000': 208,
+                    '50000': 338,
+                    '100000': 588
+                },
+                'The5ers': {
+                    '5000': 39,
+                    '10000': 85,
+                    '25000': 165,
+                    '50000': 260,
+                    '100000': 350
+                }
             };
 
+            // Function to simulate API fetch for price (replace with actual fetch in production)
+            function getPrice(firm, size) {
+                // TODO: Integrate real prop firm API here, e.g.:
+                // return fetch(`/api/propfirm/price?firm=${firm}&size=${size}`)
+                //   .then(response => response.json())
+                //   .then(data => data.price);
+                // For now, use local map
+                return Promise.resolve(priceMap[firm]?.[size] || 0);
+            }
+
             // Update contributions
-            function updateContributions() {
+            async function updateContributions() {
+                const firm = propFirm.value;
                 const size = accountSize.value;
-                const split = profitSplit.value ? parseInt(profitSplit.value.split('/')[0]) : 0;
-                const price = priceMap[size] || 0;
+                const splitValue = profitSplit.value;
+                const split = splitValue ? parseInt(splitValue.split('/')[0]) : 0;
+
+                let price = 0;
+                if (firm && size) {
+                    price = await getPrice(firm, size);
+                }
 
                 accountPrice.textContent = price ? `$${price.toFixed(2)}` : 'TBD';
-                selectedProfitSplit.textContent = profitSplit.value || 'TBD';
+                selectedProfitSplit.textContent = splitValue || 'TBD';
                 
                 if (price && split) {
                     const requesterShare = (price * split) / 100;
@@ -193,6 +239,7 @@
             function toggleCalculator() {
                 const isEnabled = calculatorToggle.checked;
                 toggleStatus.textContent = isEnabled ? 'ON' : 'OFF';
+                propFirm.disabled = !isEnabled;
                 accountSize.disabled = !isEnabled;
                 profitSplit.disabled = !isEnabled;
                 submitButton.disabled = !isEnabled;
@@ -210,11 +257,12 @@
 
             // Event listeners
             calculatorToggle.addEventListener('change', toggleCalculator);
+            propFirm.addEventListener('change', updateContributions);
             accountSize.addEventListener('change', updateContributions);
             profitSplit.addEventListener('change', updateContributions);
 
             // Form submission
-            document.getElementById('coFundingForm').addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 if (!calculatorToggle.checked) {
@@ -223,11 +271,12 @@
                     return;
                 }
 
+                const firm = propFirm.value;
                 const size = accountSize.value;
                 const split = profitSplit.value;
 
-                if (size && split) {
-                    const price = priceMap[size];
+                if (firm && size && split) {
+                    const price = await getPrice(firm, size);
                     const requesterShare = (price * parseInt(split.split('/')[0])) / 100;
                     result.textContent = `Request submitted! Your contribution of $${requesterShare.toFixed(2)} is locked.`;
                     result.className = '';
