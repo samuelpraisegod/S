@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prop Firm Brokers Demo - 2025 Edition</title>
+    <title>Prop Firm Brokers Table - 2025 Demo</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -11,64 +11,8 @@
             padding: 20px; 
             margin: 0;
         }
-        h1, h2 { text-align: center; color: #333; }
+        h2 { text-align: center; color: #333; }
         .section { margin: 40px 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .container { 
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center; 
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .card { 
-            background: white; 
-            border: 1px solid #ddd; 
-            border-radius: 12px; 
-            padding: 20px; 
-            width: 300px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-            text-align: center; 
-            transition: transform 0.2s;
-        }
-        .card:hover { transform: translateY(-5px); }
-        .card img { 
-            max-width: 100px; 
-            height: auto; 
-            margin-bottom: 15px; 
-            border-radius: 50%;
-        }
-        .card h2 { 
-            font-size: 1.4em; 
-            margin: 10px 0; 
-            color: #007bff;
-        }
-        .card p { 
-            font-size: 0.9em; 
-            color: #555; 
-            line-height: 1.4;
-        }
-        .profit-split {
-            background: #e7f3ff;
-            padding: 8px;
-            border-radius: 5px;
-            font-weight: bold;
-            color: #0056b3;
-        }
-        .card button { 
-            background: #28a745; 
-            color: white; 
-            border: none; 
-            padding: 12px 24px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 1em;
-            width: 100%;
-            margin-top: 10px;
-        }
-        .card button:hover { 
-            background: #218838; 
-        }
         /* Table Styles */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -96,26 +40,48 @@
         .firm-name:hover { color: #0056b3; }
         .firm-details { 
             display: none; 
-            padding: 10px; 
+            padding: 15px; 
             background: #f9f9f9; 
             border: 1px solid #ddd; 
             border-radius: 8px; 
             margin: 10px 0; 
+            text-align: center;
         }
         .firm-details.active { display: block; }
+        .firm-details img { 
+            max-width: 100px; 
+            height: auto; 
+            border-radius: 50%; 
+            margin-bottom: 10px;
+        }
+        .firm-details h3 { 
+            font-size: 1.4em; 
+            color: #007bff; 
+            margin: 10px 0;
+        }
+        .firm-details p { 
+            font-size: 0.9em; 
+            color: #555; 
+            line-height: 1.4;
+        }
+        .firm-details button { 
+            background: #28a745; 
+            color: white; 
+            border: none; 
+            padding: 12px 24px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        .firm-details button:hover { background: #218838; }
         @media (max-width: 600px) {
-            .container { flex-direction: column; align-items: center; }
             th, td { padding: 8px 4px; font-size: 0.85em; }
+            .firm-details { padding: 10px; }
         }
     </style>
 </head>
 <body>
-    <h1>Top Prop Firm Brokers - September 2025 Demo</h1>
-    <p style="text-align: center; color: #666;">Updated with the latest firms based on recent reviews. Click "Visit Broker" or "Firm" name for details (affiliate links ready for commissions).</p>
-
-    <!-- Cards Section (Existing) -->
-    <div class="container" id="firms-container"></div>
-
     <!-- Prop Firms Table Section -->
     <section id="prop-firms-table" class="section">
         <h2>Prop Firms Overview</h2>
@@ -144,50 +110,10 @@
     </section>
 
     <script>
-        // Existing Cards Data and Render
-        const firms = [
-            {
-                id: 1, // Added for table-details mapping
-                name: 'FTMO',
-                website: 'https://ftmo.com/',
-                description: 'Leading prop firm for forex traders with two-phase challenges, scaling up to $2M, and support for MT4/MT5/cTrader platforms.',
-                profit_split: 'Up to 90%',
-                logo: 'https://ftmo.com/wp-content/themes/ftmo/assets/images/ftmo-logo-white.svg',
-                affiliate_link: 'https://ftmo.com/en/affiliate-program/?ref=yourid'
-            },
-            // ... (other firms; truncated for brevity)
-            {
-                id: 2,
-                name: 'FundedNext',
-                website: 'https://fundednext.com/',
-                description: 'Flexible forex and futures prop firm with no time limits, scaling to $4M, fast payouts, and MT5/cTrader support.',
-                profit_split: 'Up to 95%',
-                logo: 'https://fundednext.com/assets/images/fundednext-logo.png',
-                affiliate_link: 'https://fundednext.com/affiliate?ref=yourid'
-            }
-        ];
-
-        // Render cards
-        const container = document.getElementById('firms-container');
-        firms.forEach(firm => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `
-                <img src="${firm.logo}" alt="${firm.name} Logo" onerror="this.src='https://via.placeholder.com/100x100/CCCCCC/FFFFFF?text=${firm.name.charAt(0)}';">
-                <h2>${firm.name}</h2>
-                <p>${firm.description}</p>
-                <div class="profit-split">Profit Split: ${firm.profit_split}</div>
-                <a href="${firm.affiliate_link}" target="_blank" rel="noopener noreferrer">
-                    <button>Visit Broker</button>
-                </a>
-            `;
-            container.appendChild(card);
-        });
-
         // Static Table Data (FTMO only for demo)
         const firmsTableData = [
             {
-                id: 1, // Matches firms array for details toggle
+                id: 1,
                 firm: 'FTMO',
                 rankReviews: '1 / 4.8 (25K+)',
                 country: 'Czech Republic',
@@ -197,7 +123,9 @@
                 maxAllocations: '$2,000,000',
                 promo: '25% Off Challenges',
                 profitSplit: 'Up to 90%',
-                affiliateLink: 'https://ftmo.com/en/affiliate-program/?ref=yourid'
+                affiliateLink: 'https://ftmo.com/en/affiliate-program/?ref=yourid',
+                description: 'Leading prop firm for forex traders with two-phase challenges, scaling up to $2M, and support for MT4/MT5/cTrader platforms.',
+                logo: 'https://ftmo.com/wp-content/themes/ftmo/assets/images/ftmo-logo-white.svg'
             }
             // Add more, e.g., FundedNext: { id: 2, firm: 'FundedNext', rankReviews: '2 / 4.7 (15K+)', ... }
         ];
@@ -222,15 +150,14 @@
 
             // Add hidden details row
             const detailsRow = document.createElement('tr');
-            const firmData = firms.find(f => f.id === row.id);
             detailsRow.innerHTML = `
                 <td colspan="10">
                     <div class="firm-details" id="details-${row.id}">
-                        <img src="${firmData.logo}" alt="${firmData.name} Logo" style="max-width: 100px; border-radius: 50%;" onerror="this.src='https://via.placeholder.com/100x100/CCCCCC/FFFFFF?text=${firmData.name.charAt(0)}';">
-                        <h3>${firmData.name}</h3>
-                        <p>${firmData.description}</p>
-                        <p><strong>Profit Split:</strong> ${firmData.profit_split}</p>
-                        <a href="${firmData.affiliate_link}" target="_blank" rel="noopener noreferrer">
+                        <img src="${row.logo}" alt="${row.firm} Logo" onerror="this.src='https://via.placeholder.com/100x100/CCCCCC/FFFFFF?text=${row.firm.charAt(0)}';">
+                        <h3>${row.firm}</h3>
+                        <p>${row.description}</p>
+                        <p><strong>Profit Split:</strong> ${row.profitSplit}</p>
+                        <a href="${row.affiliateLink}" target="_blank" rel="noopener noreferrer">
                             <button>Visit Broker</button>
                         </a>
                     </div>
