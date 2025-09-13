@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prop Firm Brokers Table - 2025 Demo</title>
+    <title>Challenges Page - Prop Firm Brokers 2025 Demo</title>
     <style>
         body { 
             font-family: Arial, sans-serif; 
@@ -13,6 +13,138 @@
         }
         h2 { text-align: center; color: #333; }
         .section { margin: 40px 0; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        /* Navigation Menu */
+        .nav-menu {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #fff;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .nav-menu a {
+            padding: 10px 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: background 0.3s, color 0.3s;
+        }
+        .nav-menu a:hover {
+            background: #e7f3ff;
+            color: #007bff;
+        }
+        .nav-menu a.active {
+            background: #007bff;
+            color: white;
+        }
+        /* Filter Bar */
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .filter-bar button, .filter-bar select {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .filter-bar button:hover, .filter-bar select:hover {
+            background: #e7f3ff;
+        }
+        .filter-bar .filter-btn::before {
+            content: '🔍 '; /* Placeholder filter icon */
+        }
+        .filter-bar .bookmarks-btn::before {
+            content: '🔖 '; /* Placeholder bookmark icon */
+        }
+        .filter-bar .all-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+        }
+        .filter-bar .all-btn:hover {
+            background: #0056b3;
+        }
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ccc;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 2px;
+            bottom: 2px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        input:checked + .slider {
+            background: #ff69b4; /* Pink toggle */
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        /* Search Bar */
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            font-size: 0.9em;
+        }
+        /* Count Display */
+        .counts {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1em;
+            color: #555;
+        }
+        .counts span {
+            background: #e7f3ff;
+            padding: 5px 10px;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
         /* Table Styles */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
@@ -76,12 +208,64 @@
         }
         .firm-details button:hover { background: #218838; }
         @media (max-width: 600px) {
+            .nav-menu { flex-wrap: wrap; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
             th, td { padding: 8px 4px; font-size: 0.85em; }
             .firm-details { padding: 10px; }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation Menu -->
+    <nav class="nav-menu">
+        <a href="#firms">Firms</a>
+        <a href="#challenges" class="active">Challenges</a>
+        <a href="#offers">Offers</a>
+        <a href="#reviews">Reviews</a>
+    </nav>
+
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+        <button class="filter-btn">Filter</button>
+        <select name="assets">
+            <option value="FX" selected>FX</option>
+            <option value="Crypto">Crypto</option>
+            <option value="Indices">Indices</option>
+            <option value="Commodities">Commodities</option>
+        </select>
+        <select name="size">
+            <option value="100K" selected>$100K</option>
+            <option value="50K">$50K</option>
+            <option value="200K">$200K</option>
+            <option value="400K">$400K</option>
+        </select>
+        <select name="steps">
+            <option value="2 Steps" selected>2 Steps</option>
+            <option value="1 Step">1 Step</option>
+            <option value="3 Steps">3 Steps</option>
+        </select>
+        <div class="toggle-container">
+            <label>Apply Discount</label>
+            <label class="toggle-switch">
+                <input type="checkbox">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <button class="all-btn">All</button>
+        <button class="bookmarks-btn">Bookmarks</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <input type="text" placeholder="Search for Challenges">
+    </div>
+
+    <!-- Challenge and Firm Count -->
+    <div class="counts">
+        <span>Total Challenges: 1</span>
+        <span>Total Firms: 1</span>
+    </div>
+
     <!-- Prop Firms Table Section -->
     <section id="prop-firms-table" class="section">
         <h2>Prop Firms Overview</h2>
