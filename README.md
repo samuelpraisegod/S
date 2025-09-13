@@ -128,19 +128,11 @@
                 <label for="accountSize">Account Size:</label>
                 <select id="accountSize" name="accountSize" required>
                     <option value="">Select Account Size</option>
-                    <option value="5000">$5,000</option>
-                    <option value="10000">$10,000</option>
-                    <option value="25000">$25,000</option>
-                    <option value="50000">$50,000</option>
-                    <option value="100000">$100,000</option>
                 </select>
 
                 <label for="profitSplit">Profit Split Agreement:</label>
                 <select id="profitSplit" name="profitSplit" required>
                     <option value="">Select Profit Split</option>
-                    <option value="50/50">50/50</option>
-                    <option value="60/40">60/40</option>
-                    <option value="70/30">70/30</option>
                 </select>
 
                 <div id="contributionDetails">
@@ -172,41 +164,84 @@
             const submitButton = document.getElementById('submitButton');
             const contributionDetails = document.getElementById('contributionDetails');
 
-            // Price mapping based on prop firm and account size (simulating API data; in production, fetch from API)
-            // Prices approximated from 2025 data: FTMO in USD (converted from EUR @ ~1.1 rate), others in USD
-            // Note: MyForexFunds removed as it's defunct per 2025 status
-            const priceMap = {
+            // Simulated API data for prop firms (replace with actual API in production)
+            const propFirmData = {
                 'FTMO': {
-                    '5000': 0,   // Not available for FTMO
-                    '10000': 170,
-                    '25000': 275,
-                    '50000': 380,
-                    '100000': 594
+                    accountSizes: [
+                        { size: '10000', price: 170 }, // USD, converted from ~155 EUR
+                        { size: '25000', price: 275 }, // ~250 EUR
+                        { size: '50000', price: 380 }, // ~345 EUR
+                        { size: '100000', price: 594 } // ~540 EUR
+                    ],
+                    profitSplits: ['50/50', '60/40', '70/30']
                 },
                 'E8 Funding': {
-                    '5000': 59,
-                    '10000': 99,
-                    '25000': 208,
-                    '50000': 338,
-                    '100000': 588
+                    accountSizes: [
+                        { size: '5000', price: 59 },
+                        { size: '10000', price: 99 },
+                        { size: '25000', price: 208 },
+                        { size: '50000', price: 338 },
+                        { size: '100000', price: 588 }
+                    ],
+                    profitSplits: ['50/50', '60/40', '70/30']
                 },
                 'The5ers': {
-                    '5000': 39,
-                    '10000': 85,
-                    '25000': 165,
-                    '50000': 260,
-                    '100000': 350
+                    accountSizes: [
+                        { size: '5000', price: 39 },
+                        { size: '10000', price: 85 },
+                        { size: '25000', price: 165 },
+                        { size: '50000', price: 260 },
+                        { size: '100000', price: 350 }
+                    ],
+                    profitSplits: ['50/50', '60/40']
                 }
             };
 
-            // Function to simulate API fetch for price (replace with actual fetch in production)
+            // Simulate API call to fetch prop firm details
+            function fetchPropFirmDetails(firm) {
+                // TODO: Replace with actual API call, e.g.:
+                // return fetch(`/api/propfirm/details?firm=${firm}`)
+                //   .then(response => response.json());
+                return Promise.resolve(propFirmData[firm] || { accountSizes: [], profitSplits: [] });
+            }
+
+            // Simulate API call to fetch price for specific account size
             function getPrice(firm, size) {
-                // TODO: Integrate real prop firm API here, e.g.:
+                // TODO: Replace with actual API call, e.g.:
                 // return fetch(`/api/propfirm/price?firm=${firm}&size=${size}`)
                 //   .then(response => response.json())
                 //   .then(data => data.price);
-                // For now, use local map
-                return Promise.resolve(priceMap[firm]?.[size] || 0);
+                const firmData = propFirmData[firm];
+                const account = firmData?.accountSizes.find(acc => acc.size === size);
+                return Promise.resolve(account?.price || 0);
+            }
+
+            // Populate account size dropdown
+            function populateAccountSizes(firm) {
+                accountSize.innerHTML = '<option value="">Select Account Size</option>';
+                const firmData = propFirmData[firm];
+                if (firmData && firmData.accountSizes) {
+                    firmData.accountSizes.forEach(acc => {
+                        const option = document.createElement('option');
+                        option.value = acc.size;
+                        option.textContent = `$${parseInt(acc.size).toLocaleString()}`;
+                        accountSize.appendChild(option);
+                    });
+                }
+            }
+
+            // Populate profit split dropdown
+            function populateProfitSplits(firm) {
+                profitSplit.innerHTML = '<option value="">Select Profit Split</option>';
+                const firmData = propFirmData[firm];
+                if (firmData && firmData.profitSplits) {
+                    firmData.profitSplits.forEach(split => {
+                        const option = document.createElement('option');
+                        option.value = split;
+                        option.textContent = split;
+                        profitSplit.appendChild(option);
+                    });
+                }
             }
 
             // Update contributions
@@ -257,7 +292,19 @@
 
             // Event listeners
             calculatorToggle.addEventListener('change', toggleCalculator);
-            propFirm.addEventListener('change', updateContributions);
+            propFirm.addEventListener('change', async () => {
+                const firm = propFirm.value;
+                if (firm) {
+                    await fetchPropFirmDetails(firm);
+                    populateAccountSizes(firm);
+                    populateProfitSplits(firm);
+                    updateContributions();
+                } else {
+                    accountSize.innerHTML = '<option value="">Select Account Size</option>';
+                    profitSplit.innerHTML = '<option value="">Select Profit Split</option>';
+                    updateContributions();
+                }
+            });
             accountSize.addEventListener('change', updateContributions);
             profitSplit.addEventListener('change', updateContributions);
 
