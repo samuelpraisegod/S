@@ -3,13 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacific Prop Firm Calculator</title>
+    <title>Pacific Prop Firm Co-Funding Calculator</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #hamburger {
+            cursor: pointer;
+            font-size: 24px;
+        }
+        nav {
+            display: none;
+            background-color: #444;
+            padding: 10px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        nav ul li {
+            margin: 10px 0;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
         }
         #main-content {
             max-width: 600px;
@@ -71,14 +99,12 @@
             display: block;
             margin: 10px 0 5px;
         }
-        form select, form button {
+        form button {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 4px;
             border: 1px solid #ccc;
-        }
-        form button {
             background-color: #2196F3;
             color: white;
             border: none;
@@ -88,11 +114,39 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        #profitSplitTap {
+            cursor: pointer;
+            background-color: #e0e0e0;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        #profitSplitOptions {
+            display: none;
+            margin-left: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        #profitSplitOptions div {
+            padding: 5px;
+            cursor: pointer;
+        }
+        #profitSplitOptions div:hover {
+            background-color: #d0d0d0;
+        }
         #contributionDetails {
             background: #f9f9f9;
             padding: 15px;
             border-radius: 4px;
             margin-top: 20px;
+        }
+        #requestDetails {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
         }
         #result {
             color: green;
@@ -104,12 +158,24 @@
     </style>
 </head>
 <body>
+    <header>
+        <div id="hamburger">☰</div>
+        <h2>Pacific Prop Firm Dashboard</h2>
+    </header>
+    <nav id="navigation-menu">
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="profile.html">Profile</a></li>
+            <li><a href="cofunding.html">Co-Funding</a></li>
+            <li><a href="logout.html">Logout</a></li>
+        </ul>
+    </nav>
     <div id="main-content">
         <h1>Pacific Prop Firm Co-Funding Calculator</h1>
         <div class="settings-section">
             <h2>Request Details</h2>
             <div class="toggle-container">
-                <label for="calculatorToggle">Calculator:</label>
+                <label for="calculatorToggle">Co-Funding:</label>
                 <label class="toggle-switch">
                     <input type="checkbox" id="calculatorToggle" checked>
                     <span class="slider"></span>
@@ -117,22 +183,13 @@
                 <span id="toggleStatus">ON</span>
             </div>
             <form id="coFundingForm">
-                <label for="accountSize">Account Size:</label>
-                <select id="accountSize" name="accountSize" required>
-                    <option value="">Select Account Size</option>
-                    <option value="1000">$1,000</option>
-                    <option value="2000">$2,000</option>
-                    <option value="5000">$5,000</option>
-                    <option value="10000">$10,000</option>
-                </select>
-
-                <label for="profitSplit">Profit Split Agreement:</label>
-                <select id="profitSplit" name="profitSplit" required>
-                    <option value="">Select Profit Split</option>
-                    <option value="50/50">50/50</option>
-                    <option value="60/40">60/40</option>
-                    <option value="70/30">70/30</option>
-                </select>
+                <label>Profit Split Agreement:</label>
+                <div id="profitSplitTap">Tap to Select Profit Split</div>
+                <div id="profitSplitOptions">
+                    <div data-split="50/50">50/50</div>
+                    <div data-split="70/30">70/30</div>
+                    <div data-split="80/20">80/20</div>
+                </div>
 
                 <div id="contributionDetails">
                     <h3>showTab - Contribution Breakdown</h3>
@@ -142,6 +199,13 @@
                     <p><strong>Partner Contribution:</strong> <span id="partnerContribution">TBD</span></p>
                 </div>
 
+                <div id="requestDetails">
+                    <p><strong>Current Date and Time:</strong> <span id="date-time">12:59 AM WAT, Sunday, September 14, 2025</span></p>
+                    <p><strong>Account Size:</strong> $1,000</p>
+                    <p><strong>Selected Profit Split:</strong> <span id="selectedProfitSplitSummary">TBD</span></p>
+                    <p><strong>Total Contribution:</strong> <span id="totalContribution">TBD</span></p>
+                </div>
+
                 <button type="submit" id="submitButton">Submit Request</button>
                 <p id="result"></p>
             </form>
@@ -149,8 +213,7 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const accountSize = document.getElementById('accountSize');
-            const profitSplit = document.getElementById('profitSplit');
+            const form = document.getElementById('coFundingForm');
             const accountPrice = document.getElementById('accountPrice');
             const selectedProfitSplit = document.getElementById('selectedProfitSplit');
             const requesterContribution = document.getElementById('requesterContribution');
@@ -160,86 +223,125 @@
             const toggleStatus = document.getElementById('toggleStatus');
             const submitButton = document.getElementById('submitButton');
             const contributionDetails = document.getElementById('contributionDetails');
+            const profitSplitTap = document.getElementById('profitSplitTap');
+            const profitSplitOptions = document.getElementById('profitSplitOptions');
+            const selectedProfitSplitSummary = document.getElementById('selectedProfitSplitSummary');
+            const totalContribution = document.getElementById('totalContribution');
+            const dateTime = document.getElementById('date-time');
 
-            // Pacific prop firm price mapping based on typical low-cost structures
-            const priceMap = {
-                '1000': 15,  // e.g., $15 for $1K challenge
-                '2000': 30,  // Scaled for $2K
-                '5000': 50,  // e.g., $50 for $5K challenge
-                '10000': 100 // Scaled for $10K
+            // Fixed account size and price (replace with API in production)
+            const fixedAccountSize = '1000'; // $1,000 account
+            const accountData = {
+                '1000': 15 // $15 for $1,000, as per example
             };
 
-            // Update contributions
-            function updateContributions() {
-                const size = accountSize.value;
-                const split = profitSplit.value ? parseInt(profitSplit.value.split('/')[0]) : 0;
-                const price = priceMap[size] || 0;
+            // Simulate API call to fetch price for account size
+            function getPrice(size) {
+                // TODO: Replace with actual API call, e.g.:
+                // return fetch(`/api/propfirm/price?size=${size}`)
+                //   .then(response => response.json())
+                //   .then(data => data.price);
+                return Promise.resolve(accountData[size] || 0);
+            }
+
+            // Selected profit split
+            let currentProfitSplit = null;
+
+            // Update contributions and details
+            async function updateContributionsAndDetails() {
+                const size = fixedAccountSize;
+                const split = currentProfitSplit ? parseInt(currentProfitSplit.split('/')[0]) : 0;
+
+                const price = await getPrice(size);
 
                 accountPrice.textContent = price ? `$${price.toFixed(2)}` : 'TBD';
-                selectedProfitSplit.textContent = profitSplit.value || 'TBD';
+                selectedProfitSplit.textContent = currentProfitSplit || 'TBD';
+                selectedProfitSplitSummary.textContent = currentProfitSplit || 'TBD';
                 
                 if (price && split) {
                     const requesterShare = (price * split) / 100;
                     const partnerShare = price - requesterShare;
                     requesterContribution.textContent = `$${requesterShare.toFixed(2)}`;
                     partnerContribution.textContent = `$${partnerShare.toFixed(2)}`;
+                    totalContribution.textContent = `$${price.toFixed(2)}`;
                 } else {
                     requesterContribution.textContent = 'TBD';
                     partnerContribution.textContent = 'TBD';
+                    totalContribution.textContent = 'TBD';
                 }
             }
 
-            // Toggle calculator functionality
-            function toggleCalculator() {
+            // Toggle co-funding functionality
+            function toggleCoFunding() {
                 const isEnabled = calculatorToggle.checked;
                 toggleStatus.textContent = isEnabled ? 'ON' : 'OFF';
-                accountSize.disabled = !isEnabled;
-                profitSplit.disabled = !isEnabled;
                 submitButton.disabled = !isEnabled;
                 contributionDetails.style.display = isEnabled ? 'block' : 'none';
-                if (isEnabled) {
-                    updateContributions();
-                } else {
+                profitSplitTap.style.pointerEvents = isEnabled ? 'auto' : 'none';
+                profitSplitTap.style.backgroundColor = isEnabled ? '#e0e0e0' : '#cccccc';
+                if (!isEnabled) {
+                    profitSplitOptions.style.display = 'none';
                     accountPrice.textContent = 'TBD';
                     selectedProfitSplit.textContent = 'TBD';
                     requesterContribution.textContent = 'TBD';
                     partnerContribution.textContent = 'TBD';
+                    selectedProfitSplitSummary.textContent = 'TBD';
+                    totalContribution.textContent = 'TBD';
                     result.textContent = '';
+                } else {
+                    updateContributionsAndDetails();
                 }
             }
 
-            // Event listeners
-            calculatorToggle.addEventListener('change', toggleCalculator);
-            accountSize.addEventListener('change', updateContributions);
-            profitSplit.addEventListener('change', updateContributions);
+            // Toggle profit split options visibility
+            profitSplitTap.addEventListener('click', () => {
+                if (calculatorToggle.checked) {
+                    profitSplitOptions.style.display = profitSplitOptions.style.display === 'block' ? 'none' : 'block';
+                }
+            });
+
+            // Handle profit split selection
+            profitSplitOptions.querySelectorAll('div').forEach(option => {
+                option.addEventListener('click', () => {
+                    currentProfitSplit = option.getAttribute('data-split');
+                    profitSplitTap.textContent = `Profit Split Agreement: ${currentProfitSplit}`;
+                    profitSplitOptions.style.display = 'none';
+                    updateContributionsAndDetails();
+                });
+            });
 
             // Form submission
-            document.getElementById('coFundingForm').addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
 
                 if (!calculatorToggle.checked) {
-                    result.textContent = 'Calculator is turned off. Please turn it on to submit.';
+                    result.textContent = 'Co-Funding is turned off. Please turn it on to submit.';
                     result.className = 'error';
                     return;
                 }
 
-                const size = accountSize.value;
-                const split = profitSplit.value;
-
-                if (size && split) {
-                    const price = priceMap[size];
-                    const requesterShare = (price * parseInt(split.split('/')[0])) / 100;
-                    result.textContent = `Request submitted! Your contribution of $${requesterShare.toFixed(2)} is locked.`;
-                    result.className = '';
-                } else {
-                    result.textContent = 'Please fill in all fields.';
+                if (!currentProfitSplit) {
+                    result.textContent = 'Please select a profit split.';
                     result.className = 'error';
+                    return;
                 }
+
+                const size = fixedAccountSize;
+                const price = await getPrice(size);
+                const requesterShare = (price * parseInt(currentProfitSplit.split('/')[0])) / 100;
+                result.textContent = `Request submitted! Your contribution of $${requesterShare.toFixed(2)} is locked.`;
+                result.className = '';
+            });
+
+            // Hamburger menu toggle
+            document.getElementById('hamburger').addEventListener('click', () => {
+                const nav = document.getElementById('navigation-menu');
+                nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
             });
 
             // Initial setup
-            toggleCalculator();
-            updateContributions();
+            toggleCoFunding();
+            updateContributionsAndDetails();
         });
     </script>
 </body>
