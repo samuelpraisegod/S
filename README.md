@@ -269,3 +269,54 @@
     </script>
 </body>
 </html>
+CREATE TABLE prop_firms (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    logo VARCHAR(255) NOT NULL,
+    review TEXT NOT NULL,
+    offers TEXT NOT NULL,
+    discount TEXT NOT NULL,
+    price_list JSON NOT NULL,
+    overview_details JSON NOT NULL
+);
+
+-- Example Insert (DNA Funded)
+INSERT INTO prop_firms (name, logo, review, offers, discount, price_list, overview_details) VALUES (
+    'DNA Funded',
+    'https://dnafunded.com/logo.png',
+    '4.8/5 (CBS News: "Low fees, broker-backed")',
+    '20% off; Profit Booster; Early payout; Discord',
+    '15-20% (code: DNA20); Free 5K',
+    '[{"size": "2K", "price": 15}, {"size": "5K", "price": 29}, {"size": "10K", "price": 59}, {"size": "25K", "price": 139}, {"size": "50K", "price": 199}, {"size": "100K", "price": 398}, {"size": "200K", "price": 699}]',
+    '{
+        "phases": "1-Phase (10% target, 5% daily/10% max drawdown) or 2-Phase (8%/5%). No time limits; Custom add-ons.",
+        "rules": "No weekend holding restrictions; EAs, news trading, scalping allowed; Max 5% daily loss, 10% overall loss.",
+        "payout_policy": "80-90% profit split; Payouts every 14 days (7 days with add-on); First payout after 14-day min trading.",
+        "affiliate_link": "https://dnafunded.com/affiliate",
+        "max_funding": "$600K (scalable)",
+        "leverage": "Up to 1:100",
+        "platforms": "MT5, DX Trade, TradeLocker",
+        "forex_features": "800+ CFDs, 0.0 pips via DNA Markets (ASIC), $3-$7/lot commission",
+        "notes": "ASIC-backed; US access; Scaling to $600K every 4 months"
+    }'
+);
+{
+    "id": 1,
+    "name": "DNA Funded",
+    "logo": "https://dnafunded.com/logo.png",
+    "review": "4.8/5 (CBS News: 'Low fees, broker-backed')",
+    "offers": "20% off; Profit Booster; Early payout; Discord",
+    "discount": "15-20% (code: DNA20); Free 5K",
+    "price_list": [
+        { "size": "2K", "price": 15 },
+        { "size": "5K", "price": 29 },
+        ...
+    ],
+    "overview_details": {
+        "phases": "1-Phase (10% target, 5% daily/10% max drawdown) or 2-Phase (8%/5%). No time limits; Custom add-ons.",
+        "rules": "No weekend holding restrictions; EAs, news trading, scalping allowed; Max 5% daily loss, 10% overall loss.",
+        "payout_policy": "80-90% profit split; Payouts every 14 days (7 days with add-on); First payout after 14-day min trading.",
+        "affiliate_link": "https://dnafunded.com/affiliate",
+        ...
+    }
+}
