@@ -3,345 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacific Prop Firm Co-Funding Calculator</title>
+    <meta name="description" content="Compare top forex prop firms by lowest account price, with detailed challenge, offer, and review information.">
+    <meta name="keywords" content="prop trading, forex trading, prop firms, funded trading">
+    <title>Prop Firms Overview - Sorted by Lowest Price</title>
     <style>
+        /* General Styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            line-height: 1.6;
             background-color: #f4f4f4;
         }
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        h1 {
+            text-align: center;
+            color: #333;
         }
-        #hamburger {
-            cursor: pointer;
-            font-size: 24px;
-        }
-        nav {
-            display: none;
-            background-color: #444;
-            padding: 10px;
-        }
-        nav ul {
-            list-style: none;
-            padding: 0;
-        }
-        nav ul li {
-            margin: 10px 0;
-        }
-        nav ul li a {
-            color: white;
-            text-decoration: none;
-        }
-        #main-content {
-            max-width: 600px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .toggle-container label {
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #2196F3;
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        form label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        form button {
+
+        /* Table Styles (Desktop) */
+        .prop-firms-table {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            background-color: #2196F3;
-            color: white;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .prop-firms-table th, .prop-firms-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .prop-firms-table th {
+            background: #007BFF;
+            color: #fff;
+        }
+        .prop-firms-table tr:hover {
+            background: #f9f9f9;
+        }
+        .firm-logo img {
+            width: 50px;
+            height: 50px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .overview-btn {
+            background: #007BFF;
+            color: #fff;
             border: none;
+            padding: 8px 12px;
             cursor: pointer;
-        }
-        form button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
-        }
-        #profitSplitTap {
-            cursor: pointer;
-            background-color: #e0e0e0;
-            padding: 10px;
             border-radius: 4px;
-            margin: 10px 0;
-            font-weight: bold;
+            font-size: 14px;
         }
-        #profitSplitOptions {
+        .overview-btn:hover {
+            background: #0056b3;
+        }
+        .accordion-content {
             display: none;
-            margin-left: 10px;
-            padding: 10px;
-            background: #f9f9f9;
-            border-radius: 4px;
-        }
-        #profitSplitOptions div {
-            padding: 5px;
-            cursor: pointer;
-        }
-        #profitSplitOptions div:hover {
-            background-color: #d0d0d0;
-        }
-        #contributionDetails {
-            background: #f9f9f9;
             padding: 15px;
-            border-radius: 4px;
-            margin-top: 20px;
+            background: #f1f1f1;
+            border-top: 1px solid #ddd;
         }
-        #requestDetails {
-            background: #f0f0f0;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 10px;
+        .accordion-content.active {
+            display: block;
         }
-        #result {
-            color: green;
-            margin-top: 10px;
+
+        /* Card Styles (Mobile) */
+        @media (max-width: 768px) {
+            .prop-firms-table {
+                display: none;
+            }
+            .prop-firms-cards {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+            }
+            .prop-firm-card {
+                background: #fff;
+                border-radius: 8px;
+                padding: 15px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            .prop-firm-card h3 {
+                margin: 0 0 10px;
+                font-size: 18px;
+                color: #333;
+            }
+            .prop-firm-card img {
+                width: 40px;
+                height: 40px;
+                vertical-align: middle;
+                margin-right: 10px;
+            }
+            .prop-firm-card p {
+                margin: 5px 0;
+                font-size: 14px;
+            }
+            .overview-btn {
+                width: 100%;
+                text-align: center;
+            }
         }
-        .error {
-            color: red;
+
+        /* Desktop Hide Cards */
+        @media (min-width: 769px) {
+            .prop-firms-cards {
+                display: none;
+            }
+        }
+
+        /* Accessibility */
+        .overview-btn:focus {
+            outline: 2px solid #007BFF;
         }
     </style>
 </head>
 <body>
-    <header>
-        <div id="hamburger">☰</div>
-        <h2>Pacific Prop Firm Dashboard</h2>
-    </header>
-    <nav id="navigation-menu">
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="profile.html">Profile</a></li>
-            <li><a href="cofunding.html">Co-Funding</a></li>
-            <li><a href="logout.html">Logout</a></li>
-        </ul>
-    </nav>
-    <div id="main-content">
-        <h1>Pacific Prop Firm Co-Funding Calculator</h1>
-        <div class="settings-section">
-            <h2>Request Details</h2>
-            <div class="toggle-container">
-                <label for="calculatorToggle">Co-Funding:</label>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="calculatorToggle" checked>
-                    <span class="slider"></span>
-                </label>
-                <span id="toggleStatus">ON</span>
+    <h1>Prop Firms Overview - Sorted by Lowest Price</h1>
+
+    <!-- Desktop Table -->
+    <table class="prop-firms-table">
+        <thead>
+            <tr>
+                <th>Firm (Logo + Name)</th>
+                <th>Review</th>
+                <th>Offers</th>
+                <th>Discount</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="firm-logo"><img src="https://dnafunded.com/logo.png" alt="DNA Funded Logo" loading="lazy"></span><a href="https://dnafunded.com/">DNA Funded</a></td>
+                <td>4.8/5 (CBS News: "Low fees, broker-backed")</td>
+                <td>20% off; Profit Booster; Early payout; Discord</td>
+                <td>15-20% (code: DNA20); Free 5K</td>
+                <td>$15 for 2K<br><button class="overview-btn" aria-expanded="false" aria-controls="dna-funded-details">Overview</button></td>
+            </tr>
+            <tr class="accordion-content" id="dna-funded-details">
+                <td colspan="5">
+                    <strong>Account Sizes & Prices</strong>: 2K: $15, 5K: $29, 10K: $59, 25K: $139, 50K: $199, 100K: $398, 200K: $699.<br>
+                    <strong>Phases</strong>: 1-Phase (10% target, 5% daily/10% max drawdown) or 2-Phase (8%/5%). No time limits; Custom add-ons.<br>
+                    <strong>Offers</strong>: 20% off (code: PROPFIRMS20); Profit Booster (80-90%); Early payout (7 days). Discord community.<br>
+                    <strong>Discounts</strong>: 15-20% via codes (e.g., DNA20); Seasonal free 5K account.<br>
+                    <strong>Reviews</strong>: 4.8/5 (CBS News: "Low fees, broker-backed" – Top-rated 2025). Excellent for spreads/support.<br>
+                    <strong>Max Funding</strong>: $600K (scalable).<br>
+                    <strong>Leverage (Forex)</strong>: Up to 1:100.<br>
+                    <strong>Platforms</strong>: MT5, DX Trade, TradeLocker.<br>
+                    <strong>Forex Features</strong>: 800+ CFDs, 0.0 pips via DNA Markets (ASIC).<br>
+                    <strong>Notes</strong>: ASIC-backed; US access; 14-day min for first payout.
+                </td>
+            </tr>
+            <tr>
+                <td><span class="firm-logo"><img src="https://www.axi.com/logo.png" alt="Axi Select Logo" loading="lazy"></span><a href="https://www.axi.com/int/funded-trader-program">Axi Select</a></td>
+                <td>4.6/5 (Investing.com: "Free entry, transparent")</td>
+                <td>Free to join ($500 deposit); 90% split; Edge tools</td>
+                <td>Up to 20% (code: AXIPROP20)</td>
+                <td>Free ($500 deposit)<br><button class="overview-btn" aria-expanded="false" aria-controls="axi-select-details">Overview</button></td>
+            </tr>
+            <tr class="accordion-content" id="axi-select-details">
+                <td colspan="5">
+                    <strong>Account Sizes & Prices</strong>: Free join; Min deposit $500 (no challenge fees; all sizes scale from $5K base).<br>
+                    <strong>Phases</strong>: No traditional phases; 6 Stages (Seed to Pro M) based on Edge Score (50+ required after 20 trades). Live account progression.<br>
+                    <strong>Offers</strong>: 100% free to join (min $500 deposit); Up to 90% split; Add-ons: Edge score tools, community access. No membership fees.<br>
+                    <strong>Discounts</strong>: Up to 20% via affiliate codes (e.g., AXIPROP20).<br>
+                    <strong>Reviews</strong>: 4.6/5 (Investing.com: "Free entry, transparent" – 10k+ reviews). Praised for no eval fees, but score-based.<br>
+                    <strong>Max Funding</strong>: $1M.<br>
+                    <strong>Leverage (Forex)</strong>: Up to 1:100.<br>
+                    <strong>Platforms</strong>: MT4.<br>
+                    <strong>Forex Features</strong>: 250+ assets, 0.0 pips, crypto/forex focus.<br>
+                    <strong>Notes</strong>: ASIC-regulated hybrid; Live trading from start; Fraud prevention; Global, US-friendly.
+                </td>
+            </tr>
+            <!-- Add other firms similarly: FundingPips, GoatFundedTrader, OANDA Prop Trader, The5%ers, FundedNext, FXIFY, SabioTrade, FTMO -->
+            <!-- Example for one more firm to avoid repetition -->
+            <tr>
+                <td><span class="firm-logo"><img src="https://fundingpips.com/logo.png" alt="FundingPips Logo" loading="lazy"></span><a href="https://fundingpips.com">FundingPips</a></td>
+                <td>4.4/5 (Trustpilot: "Low spreads, fair evals")</td>
+                <td>95% split upgrade; Trade2Earn; Scaling plan</td>
+                <td>10-20% (code: FP20)</td>
+                <td>$29 for 5K<br><button class="overview-btn" aria-expanded="false" aria-controls="fundingpips-details">Overview</button></td>
+            </tr>
+            <tr class="accordion-content" id="fundingpips-details">
+                <td colspan="5">
+                    <strong>Account Sizes & Prices</strong>: 5K: $29, 10K: $59, 25K: $139, 50K: $229, 100K: $399, 200K: $699.<br>
+                    <strong>Phases</strong>: 2-Phase (Student: 8% target; Practitioner: 5%; Master funded). 4-6% drawdowns; Manual review post-phase (2 days).<br>
+                    <strong>Offers</strong>: 95% split upgrade; Trade2Earn loyalty rewards; Up to 20% discounts (code: PROPFIRMS20). Scaling every 4 months.<br>
+                    <strong>Discounts</strong>: 10-20% via codes (e.g., FP20).<br>
+                    <strong>Reviews</strong>: 4.4/5 (Trustpilot: 29k+ reviews; "Low spreads, fair evals" – FinanceMagnates). High for execution speed.<br>
+                    <strong>Max Funding</strong>: $2M (scalable).<br>
+                    <strong>Leverage (Forex)</strong>: Up to 1:100.<br>
+                    <strong>Platforms</strong>: MT5, cTrader, Match-Trader.<br>
+                    <strong>Forex Features</strong>: $2/lot commission, 50+ pairs, news/overnight holds.<br>
+                    <strong>Notes</strong>: 1M+ traders; RAW spreads; Payouts on Tuesdays; Global, including US.
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Mobile Cards -->
+    <div class="prop-firms-cards">
+        <div class="prop-firm-card">
+            <h3><img src="https://dnafunded.com/logo.png" alt="DNA Funded Logo" loading="lazy"> <a href="https://dnafunded.com/">DNA Funded</a></h3>
+            <p><strong>Review</strong>: 4.8/5 (CBS News: "Low fees, broker-backed")</p>
+            <p><strong>Offers</strong>: 20% off; Profit Booster; Early payout; Discord</p>
+            <p><strong>Discount</strong>: 15-20% (code: DNA20); Free 5K</p>
+            <p><strong>Price</strong>: $15 for 2K <button class="overview-btn" aria-expanded="false" aria-controls="dna-funded-card-details">Overview</button></p>
+            <div class="accordion-content" id="dna-funded-card-details">
+                <p><strong>Account Sizes & Prices</strong>: 2K: $15, 5K: $29, 10K: $59, 25K: $139, 50K: $199, 100K: $398, 200K: $699.</p>
+                <p><strong>Phases</strong>: 1-Phase (10% target, 5% daily/10% max drawdown) or 2-Phase (8%/5%). No time limits; Custom add-ons.</p>
+                <p><strong>Offers</strong>: 20% off (code: PROPFIRMS20); Profit Booster (80-90%); Early payout (7 days). Discord community.</p>
+                <p><strong>Discounts</strong>: 15-20% via codes (e.g., DNA20); Seasonal free 5K account.</p>
+                <p><strong>Reviews</strong>: 4.8/5 (CBS News: "Low fees, broker-backed" – Top-rated 2025). Excellent for spreads/support.</p>
+                <p><strong>Max Funding</strong>: $600K (scalable).</p>
+                <p><strong>Leverage (Forex)</strong>: Up to 1:100.</p>
+                <p><strong>Platforms</strong>: MT5, DX Trade, TradeLocker.</p>
+                <p><strong>Forex Features</strong>: 800+ CFDs, 0.0 pips via DNA Markets (ASIC).</p>
+                <p><strong>Notes</strong>: ASIC-backed; US access; 14-day min for first payout.</p>
             </div>
-            <form id="coFundingForm">
-                <label>Profit Split Agreement:</label>
-                <div id="profitSplitTap">Tap to Select Profit Split</div>
-                <div id="profitSplitOptions">
-                    <div data-split="50/50">50/50</div>
-                    <div data-split="70/30">70/30</div>
-                    <div data-split="80/20">80/20</div>
-                </div>
-
-                <div id="contributionDetails">
-                    <h3>showTab - Contribution Breakdown</h3>
-                    <p><strong>Account Price:</strong> <span id="accountPrice">TBD</span></p>
-                    <p><strong>Profit Split:</strong> <span id="selectedProfitSplit">TBD</span></p>
-                    <p><strong>Requester Contribution:</strong> <span id="requesterContribution">TBD</span></p>
-                    <p><strong>Partner Contribution:</strong> <span id="partnerContribution">TBD</span></p>
-                </div>
-
-                <div id="requestDetails">
-                    <p><strong>Current Date and Time:</strong> <span id="date-time">12:59 AM WAT, Sunday, September 14, 2025</span></p>
-                    <p><strong>Account Size:</strong> $1,000</p>
-                    <p><strong>Selected Profit Split:</strong> <span id="selectedProfitSplitSummary">TBD</span></p>
-                    <p><strong>Total Contribution:</strong> <span id="totalContribution">TBD</span></p>
-                </div>
-
-                <button type="submit" id="submitButton">Submit Request</button>
-                <p id="result"></p>
-            </form>
         </div>
+        <!-- Add other firms similarly -->
     </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('coFundingForm');
-            const accountPrice = document.getElementById('accountPrice');
-            const selectedProfitSplit = document.getElementById('selectedProfitSplit');
-            const requesterContribution = document.getElementById('requesterContribution');
-            const partnerContribution = document.getElementById('partnerContribution');
-            const result = document.getElementById('result');
-            const calculatorToggle = document.getElementById('calculatorToggle');
-            const toggleStatus = document.getElementById('toggleStatus');
-            const submitButton = document.getElementById('submitButton');
-            const contributionDetails = document.getElementById('contributionDetails');
-            const profitSplitTap = document.getElementById('profitSplitTap');
-            const profitSplitOptions = document.getElementById('profitSplitOptions');
-            const selectedProfitSplitSummary = document.getElementById('selectedProfitSplitSummary');
-            const totalContribution = document.getElementById('totalContribution');
-            const dateTime = document.getElementById('date-time');
+        // Accordion Functionality
+        document.querySelectorAll('.overview-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const contentId = button.getAttribute('aria-controls');
+                const content = document.getElementById(contentId);
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
 
-            // Fixed account size and price (replace with API in production)
-            const fixedAccountSize = '1000'; // $1,000 account
-            const accountData = {
-                '1000': 15 // $15 for $1,000, as per example
-            };
-
-            // Simulate API call to fetch price for account size
-            function getPrice(size) {
-                // TODO: Replace with actual API call, e.g.:
-                // return fetch(`/api/propfirm/price?size=${size}`)
-                //   .then(response => response.json())
-                //   .then(data => data.price);
-                return Promise.resolve(accountData[size] || 0);
-            }
-
-            // Selected profit split
-            let currentProfitSplit = null;
-
-            // Update contributions and details
-            async function updateContributionsAndDetails() {
-                const size = fixedAccountSize;
-                const split = currentProfitSplit ? parseInt(currentProfitSplit.split('/')[0]) : 0;
-
-                const price = await getPrice(size);
-
-                accountPrice.textContent = price ? `$${price.toFixed(2)}` : 'TBD';
-                selectedProfitSplit.textContent = currentProfitSplit || 'TBD';
-                selectedProfitSplitSummary.textContent = currentProfitSplit || 'TBD';
-                
-                if (price && split) {
-                    const requesterShare = (price * split) / 100;
-                    const partnerShare = price - requesterShare;
-                    requesterContribution.textContent = `$${requesterShare.toFixed(2)}`;
-                    partnerContribution.textContent = `$${partnerShare.toFixed(2)}`;
-                    totalContribution.textContent = `$${price.toFixed(2)}`;
-                } else {
-                    requesterContribution.textContent = 'TBD';
-                    partnerContribution.textContent = 'TBD';
-                    totalContribution.textContent = 'TBD';
-                }
-            }
-
-            // Toggle co-funding functionality
-            function toggleCoFunding() {
-                const isEnabled = calculatorToggle.checked;
-                toggleStatus.textContent = isEnabled ? 'ON' : 'OFF';
-                submitButton.disabled = !isEnabled;
-                contributionDetails.style.display = isEnabled ? 'block' : 'none';
-                profitSplitTap.style.pointerEvents = isEnabled ? 'auto' : 'none';
-                profitSplitTap.style.backgroundColor = isEnabled ? '#e0e0e0' : '#cccccc';
-                if (!isEnabled) {
-                    profitSplitOptions.style.display = 'none';
-                    accountPrice.textContent = 'TBD';
-                    selectedProfitSplit.textContent = 'TBD';
-                    requesterContribution.textContent = 'TBD';
-                    partnerContribution.textContent = 'TBD';
-                    selectedProfitSplitSummary.textContent = 'TBD';
-                    totalContribution.textContent = 'TBD';
-                    result.textContent = '';
-                } else {
-                    updateContributionsAndDetails();
-                }
-            }
-
-            // Toggle profit split options visibility
-            profitSplitTap.addEventListener('click', () => {
-                if (calculatorToggle.checked) {
-                    profitSplitOptions.style.display = profitSplitOptions.style.display === 'block' ? 'none' : 'block';
-                }
-            });
-
-            // Handle profit split selection
-            profitSplitOptions.querySelectorAll('div').forEach(option => {
-                option.addEventListener('click', () => {
-                    currentProfitSplit = option.getAttribute('data-split');
-                    profitSplitTap.textContent = `Profit Split Agreement: ${currentProfitSplit}`;
-                    profitSplitOptions.style.display = 'none';
-                    updateContributionsAndDetails();
+                // Close all other accordions
+                document.querySelectorAll('.accordion-content').forEach(otherContent => {
+                    if (otherContent !== content) {
+                        otherContent.classList.remove('active');
+                        otherContent.previousElementSibling.querySelector('.overview-btn').setAttribute('aria-expanded', 'false');
+                    }
                 });
+
+                // Toggle current accordion
+                content.classList.toggle('active');
+                button.setAttribute('aria-expanded', !isExpanded);
+                button.textContent = isExpanded ? 'Overview' : 'Collapse';
             });
-
-            // Form submission
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                if (!calculatorToggle.checked) {
-                    result.textContent = 'Co-Funding is turned off. Please turn it on to submit.';
-                    result.className = 'error';
-                    return;
-                }
-
-                if (!currentProfitSplit) {
-                    result.textContent = 'Please select a profit split.';
-                    result.className = 'error';
-                    return;
-                }
-
-                const size = fixedAccountSize;
-                const price = await getPrice(size);
-                const requesterShare = (price * parseInt(currentProfitSplit.split('/')[0])) / 100;
-                result.textContent = `Request submitted! Your contribution of $${requesterShare.toFixed(2)} is locked.`;
-                result.className = '';
-            });
-
-            // Hamburger menu toggle
-            document.getElementById('hamburger').addEventListener('click', () => {
-                const nav = document.getElementById('navigation-menu');
-                nav.style.display = nav.style.display === 'block' ? 'none' : 'block';
-            });
-
-            // Initial setup
-            toggleCoFunding();
-            updateContributionsAndDetails();
         });
     </script>
 </body>
